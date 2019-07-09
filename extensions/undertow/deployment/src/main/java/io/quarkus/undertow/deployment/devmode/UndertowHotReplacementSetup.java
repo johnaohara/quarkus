@@ -83,7 +83,7 @@ public class UndertowHotReplacementSetup implements HotReplacementSetup {
     private void handleDeploymentProblem(HttpServerExchange exchange, final Throwable exception) {
         String bodyText = ReplacementDebugPage.generateHtml(exception);
         exchange.setStatusCode(500);
-        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/html; charset=UTF-8");
-        exchange.getResponseSender().send(bodyText);
+        exchange.setResponseHeader(Headers.CONTENT_TYPE.toString(), "text/html; charset=UTF-8");
+        exchange.writeAsync(bodyText);
     }
 }

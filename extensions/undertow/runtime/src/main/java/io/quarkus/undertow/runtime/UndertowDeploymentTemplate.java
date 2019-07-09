@@ -352,7 +352,8 @@ public class UndertowDeploymentTemplate {
             }
             if (sslContext != null) {
                 log.debugf("Starting Undertow HTTPS listener on port %d", sslPort);
-                builder.addHttpsListener(sslPort, config.host, sslContext);
+                //                TODO: for now looks like the builder does not support adding a httpsListener
+                //                builder.addHttpsListener(sslPort, config.host, sslContext);
             }
             undertow = builder
                     .build();

@@ -18,7 +18,9 @@ package io.quarkus.undertow.runtime;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,8 +31,7 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import io.undertow.io.IoCallback;
-import io.undertow.io.Sender;
+import io.undertow.httpcore.OutputChannel;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.handlers.resource.Resource;
 import io.undertow.server.handlers.resource.ResourceManager;
@@ -155,9 +156,19 @@ public class KnownPathResourceManager implements ResourceManager {
         }
 
         @Override
-        public void serve(Sender sender, HttpServerExchange exchange, IoCallback completionCallback) {
-            completionCallback.onException(exchange, sender, new IOException("Cannot serve directory"));
+        public void serveBlocking(OutputStream outputStream, HttpServerExchange exchange) throws IOException {
+            outputStream.write("Cannot serve directory".getBytes(Charset.forName("UTF-8")));
         }
+
+        @Override
+        public void serveAsync(OutputChannel stream, HttpServerExchange exchange) {
+            stream.writeAsync("Cannot serve directory");
+        }
+
+        //        @Override
+        //        public void serve(Sender sender, HttpServerExchange exchange, IoCallback completionCallback) {
+        //            completionCallback.onException(exchange, sender, new IOException("Cannot serve directory"));
+        //        }
 
         @Override
         public Long getContentLength() {

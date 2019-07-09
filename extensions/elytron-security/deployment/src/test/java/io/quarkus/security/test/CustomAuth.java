@@ -1,10 +1,10 @@
 package io.quarkus.security.test;
 
 import static io.undertow.UndertowMessages.MESSAGES;
+import static io.undertow.httpcore.StatusCodes.UNAUTHORIZED;
 import static io.undertow.util.Headers.AUTHORIZATION;
 import static io.undertow.util.Headers.BASIC;
 import static io.undertow.util.Headers.WWW_AUTHENTICATE;
-import static io.undertow.util.StatusCodes.UNAUTHORIZED;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -39,7 +39,7 @@ public class CustomAuth implements AuthenticationMechanism {
 
     @Override
     public AuthenticationMechanismOutcome authenticate(HttpServerExchange exchange, SecurityContext securityContext) {
-        List<String> authHeaders = exchange.getRequestHeaders().get(AUTHORIZATION);
+        List<String> authHeaders = exchange.getRequestHeaders(AUTHORIZATION.toString());
         log.info("CustomAuth, authHeaders: " + authHeaders);
         if (authHeaders != null) {
             for (String current : authHeaders) {
@@ -87,7 +87,7 @@ public class CustomAuth implements AuthenticationMechanism {
 
     @Override
     public ChallengeResult sendChallenge(HttpServerExchange exchange, SecurityContext securityContext) {
-        exchange.getResponseHeaders().add(WWW_AUTHENTICATE, "BASIC realm=CUSTOM");
+        exchange.setResponseHeader(WWW_AUTHENTICATE.toString(), "BASIC realm=CUSTOM");
         UndertowLogger.SECURITY_LOGGER.infof("Sending basic auth challenge for %s", exchange);
         return new ChallengeResult(true, UNAUTHORIZED);
     }

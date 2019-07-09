@@ -1,9 +1,9 @@
 package io.quarkus.smallrye.jwt.runtime.auth;
 
+import static io.undertow.httpcore.StatusCodes.UNAUTHORIZED;
 import static io.undertow.util.Headers.AUTHORIZATION;
 import static io.undertow.util.Headers.COOKIE;
 import static io.undertow.util.Headers.WWW_AUTHENTICATE;
-import static io.undertow.util.StatusCodes.UNAUTHORIZED;
 
 import java.util.Locale;
 
@@ -71,7 +71,7 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
     private String getJwtToken(HttpServerExchange exchange) {
         String bearerToken = null;
         if (AUTHORIZATION.toString().equals(authContextInfo.getTokenHeader())) {
-            String authScheme = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
+            String authScheme = exchange.getRequestHeader(authContextInfo.getTokenHeader());
             if (authScheme != null && authScheme.toLowerCase(Locale.ENGLISH).startsWith("bearer ")) {
                 bearerToken = authScheme.substring(7);
             }
@@ -82,14 +82,14 @@ public class JWTAuthMechanism implements AuthenticationMechanism {
                 bearerToken = cookie.getValue();
             }
         } else {
-            bearerToken = exchange.getRequestHeaders().getFirst(authContextInfo.getTokenHeader());
+            bearerToken = exchange.getRequestHeader(authContextInfo.getTokenHeader());
         }
         return bearerToken;
     }
 
     @Override
     public ChallengeResult sendChallenge(HttpServerExchange exchange, SecurityContext securityContext) {
-        exchange.getResponseHeaders().add(WWW_AUTHENTICATE, "Bearer {token}");
+        exchange.setResponseHeader(WWW_AUTHENTICATE.toString(), "Bearer {token}");
         UndertowLogger.SECURITY_LOGGER.debugf("Sending Bearer {token} challenge for %s", exchange);
         return new ChallengeResult(true, UNAUTHORIZED);
     }
