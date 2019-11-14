@@ -18,7 +18,7 @@ public class VertxBlockingOutput implements VertxOutput {
     protected boolean drainHandlerRegistered;
     protected final HttpServerRequest request;
     protected boolean first = true;
-    protected Throwable throwable;
+    protected volatile Throwable throwable;
 
     public VertxBlockingOutput(HttpServerRequest request) {
         this.request = request;
