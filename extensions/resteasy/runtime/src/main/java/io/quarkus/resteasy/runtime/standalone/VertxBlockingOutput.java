@@ -95,16 +95,22 @@ public class VertxBlockingOutput implements VertxOutput {
             if (Context.isOnEventLoopThread()) {
                 throw new IOException("Attempting a blocking write on io thread");
             }
+            if (request.response().closed()) {
+                log.debugf("Connection has been closed");
+                return;
+            }
             if (!drainHandlerRegistered) {
                 drainHandlerRegistered = true;
-                request.response().drainHandler(new Handler<Void>() {
+                Handler<Void> handler = new Handler<Void>() {
                     @Override
                     public void handle(Void event) {
                         if (waitingForDrain) {
                             request.connection().notifyAll();
                         }
                     }
-                });
+                };
+                request.response().drainHandler(handler);
+                request.response().closeHandler(handler);
             }
             try {
                 waitingForDrain = true;
