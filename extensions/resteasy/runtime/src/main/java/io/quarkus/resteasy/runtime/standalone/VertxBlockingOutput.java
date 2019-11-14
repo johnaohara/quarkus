@@ -68,24 +68,26 @@ public class VertxBlockingOutput implements VertxOutput {
         try {
             //do all this in the same lock
             synchronized (request.connection()) {
-                awaitWriteable();
-                if (last) {
-                    request.response().end(createBuffer(data));
-                } else {
-                    request.response().write(createBuffer(data));
+                if (awaitWriteable()) {
+                    if (last) {
+                        request.response().end(createBuffer(data));
+                    } else {
+                        request.response().write(createBuffer(data));
+                    }
                 }
             }
         } finally {
+            data.clear();
             if (last) {
                 terminateResponse();
             }
         }
     }
 
-    private void awaitWriteable() throws IOException {
+    private boolean awaitWriteable() throws IOException {
         if (first) {
             first = false;
-            return;
+            return true;
         }
         assert Thread.holdsLock(request.connection());
         while (request.response().writeQueueFull()) {
@@ -97,7 +99,7 @@ public class VertxBlockingOutput implements VertxOutput {
             }
             if (request.response().closed()) {
                 log.debugf("Connection has been closed");
-                return;
+                return false;
             }
             if (!drainHandlerRegistered) {
                 drainHandlerRegistered = true;
@@ -121,6 +123,7 @@ public class VertxBlockingOutput implements VertxOutput {
                 waitingForDrain = false;
             }
         }
+        return true;
     }
 
 }
