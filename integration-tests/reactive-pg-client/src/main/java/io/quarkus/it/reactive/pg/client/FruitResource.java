@@ -39,6 +39,7 @@ public class FruitResource {
             for (Row row : pgRowSet) {
                 jsonArray.add(toJson(row));
             }
+            System.err.println("Return fruit list from thread: " + Thread.currentThread());
             return jsonArray;
         });
     }
