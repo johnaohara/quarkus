@@ -322,12 +322,6 @@ public class NativeImageBuildStep {
 
     private void checkGraalVMVersion(String version) {
         log.info("Running Quarkus native-image plugin on " + version);
-        List<String> supportedGraalVmVersions = Arrays.asList(" 19.2.1 ", " 19.3.1 ", " 19.3.0.2 ");
-        if (supportedGraalVmVersions.stream().noneMatch(version::contains)) {
-            throw new IllegalStateException("Unsupported version of GraalVM detected: " + version + "."
-                    + " Quarkus currently offers a stable support of GraalVM 19.2.1 and an experimental support of GraalVM 19.3.1."
-                    + " Please upgrade GraalVM to one of these versions.");
-        }
     }
 
     private static File getNativeImageExecutable(Optional<String> graalVmHome, File javaHome, Map<String, String> env) {
