@@ -152,10 +152,6 @@ public class VertxOutputStream extends AsyncOutputStream {
     }
 
     @Override
-    public CompletionStage<Void> rxWrite(byte[] bytes) {
-        return rxWrite(bytes, 0, bytes.length);
-    }
-
     public CompletionStage<Void> rxWrite(final byte[] b, final int off, final int len) {
         if (len < 1) {
             return CompletableFuture.completedFuture(null);
