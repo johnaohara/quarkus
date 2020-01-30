@@ -40,12 +40,6 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-kogito</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
