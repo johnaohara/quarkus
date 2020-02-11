@@ -78,14 +78,11 @@ public class VertxRequestHandler implements Handler<RoutingContext> {
             return;
         }
 
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    dispatch(request, is, new VertxBlockingOutput(request.request()));
-                } catch (Throwable e) {
-                    request.fail(e);
-                }
+        vertx.executeBlocking(event -> {
+            dispatch(request, is, new VertxBlockingOutput(request.request()));
+        }, false, event -> {
+            if (event.failed()) {
+                request.fail(event.cause());
             }
         });
     }
