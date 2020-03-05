@@ -13,9 +13,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.logging.Logger;
+import org.jboss.threads.EnhancedQueueExecutor;
 import org.jboss.threads.JBossExecutors;
 import org.jboss.threads.JBossThreadFactory;
-import org.jboss.threads.StripedEnhancedQueueExecutor;
 
 import io.quarkus.builder.diag.Diagnostic;
 import io.quarkus.builder.item.BuildItem;
@@ -31,7 +31,7 @@ final class Execution {
     private final ConcurrentHashMap<ItemId, List<BuildItem>> multis;
     private final Set<ItemId> finalIds;
     private final ConcurrentHashMap<StepInfo, BuildContext> contextCache = new ConcurrentHashMap<>();
-    private final StripedEnhancedQueueExecutor executor;
+    private final EnhancedQueueExecutor executor;
     private final List<Diagnostic> diagnostics = Collections.synchronizedList(new ArrayList<>());
     private final String buildTargetName;
     private final AtomicBoolean errorReported = new AtomicBoolean();
@@ -44,7 +44,7 @@ final class Execution {
         this.singles = new ConcurrentHashMap<>(builder.getInitialSingle());
         this.multis = new ConcurrentHashMap<>(builder.getInitialMulti());
         this.finalIds = finalIds;
-        final StripedEnhancedQueueExecutor.Builder executorBuilder = new StripedEnhancedQueueExecutor.Builder();
+        final EnhancedQueueExecutor.Builder executorBuilder = new EnhancedQueueExecutor.Builder();
         executorBuilder.setCorePoolSize(8).setMaximumPoolSize(1024);
         executorBuilder.setExceptionHandler(JBossExecutors.loggingExceptionHandler());
         executorBuilder.setThreadFactory(new JBossThreadFactory(new ThreadGroup("build group"), Boolean.FALSE, null, "build-%t",
@@ -120,7 +120,7 @@ final class Execution {
                 max(0, System.nanoTime() - start));
     }
 
-    StripedEnhancedQueueExecutor getExecutor() {
+    EnhancedQueueExecutor getExecutor() {
         return executor;
     }
 

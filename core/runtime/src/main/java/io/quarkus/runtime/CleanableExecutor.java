@@ -11,11 +11,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.jboss.threads.StripedEnhancedQueueExecutor;
+import org.jboss.threads.EnhancedQueueExecutor;
 
 import sun.misc.Unsafe;
 
@@ -30,7 +31,7 @@ import sun.misc.Unsafe;
  */
 public final class CleanableExecutor implements ExecutorService {
 
-    private final StripedEnhancedQueueExecutor executor;
+    private final EnhancedQueueExecutor executor;
 
     private static final AtomicInteger generation = new AtomicInteger(1);
     private static final ThreadLocal<Integer> lastGeneration = new ThreadLocal<Integer>() {
@@ -40,7 +41,7 @@ public final class CleanableExecutor implements ExecutorService {
         }
     };
 
-    public CleanableExecutor(StripedEnhancedQueueExecutor executor) {
+    public CleanableExecutor(EnhancedQueueExecutor executor) {
         this.executor = executor;
     }
 
@@ -64,15 +65,13 @@ public final class CleanableExecutor implements ExecutorService {
         //state that is stopping things being GC'ed it can help with memory usage
         try {
             if (!executor.isShutdown()) {
-                /*
-                 * for (int i = 0; i < executor.getMaximumPoolSize(); ++i) {
-                 * try {
-                 * submit(empty);
-                 * } catch (RejectedExecutionException e) {
-                 * //ignore
-                 * }
-                 * }
-                 */
+                for (int i = 0; i < executor.getMaximumPoolSize(); ++i) {
+                    try {
+                        submit(empty);
+                    } catch (RejectedExecutionException e) {
+                        //ignore
+                    }
+                }
             }
         } finally {
             latch.countDown();
