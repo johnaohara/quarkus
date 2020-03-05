@@ -11,7 +11,7 @@
     <artifactId>quarkus-tools-parent</artifactId>
     <name>Quarkus - Dev tools - Parent</name>
     <packaging>pom</packaging>
-    <version>999-SNAPSHOT</version>
+    <version>999-SNAPSHOT-JBOSS-JOH-LTQ</version>
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
