@@ -165,7 +165,9 @@ public class ExecutorRecorder {
         }
         builder.setGrowthResistance(threadPoolConfig.growthResistance);
         builder.setKeepAliveTime(threadPoolConfig.keepAliveTime);
-        return builder.build();
+        EnhancedQueueExecutor enhancedQueueExecutor = builder.build();
+        enhancedQueueExecutor.prestartAllCoreThreads();
+        return enhancedQueueExecutor;
     }
 
     public static Executor getCurrent() {
