@@ -460,7 +460,7 @@
                     <plugin>
                         <artifactId>maven-compiler-plugin</artifactId>
                         <configuration>
-                            <release>8</release>
+                            <release>15</release>
                         </configuration>
                     </plugin>
                 </plugins>
