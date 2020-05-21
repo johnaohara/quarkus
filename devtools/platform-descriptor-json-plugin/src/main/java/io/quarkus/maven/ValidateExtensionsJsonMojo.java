@@ -182,7 +182,7 @@ public class ValidateExtensionsJsonMojo extends AbstractMojo {
             processExtensionDescriptor(artifact, file.toPath().resolve(BootstrapConstants.META_INF)
                     .resolve(descriptorName), extensions);
         } else {
-            try (FileSystem fs = FileSystems.newFileSystem(file.toPath(), null)) {
+            try (FileSystem fs = FileSystems.newFileSystem(file.toPath(), (ClassLoader) null)) {
                 processExtensionDescriptor(artifact,
                         fs.getPath("/", BootstrapConstants.META_INF, descriptorName),
                         extensions);

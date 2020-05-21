@@ -284,7 +284,7 @@ public class AppModelGradleResolver implements AppModelResolver {
                     extDep = processQuarkusDir(appDep.getArtifact(), artifactPath.resolve(BootstrapConstants.META_INF),
                             appBuilder);
                 } else {
-                    try (FileSystem artifactFs = FileSystems.newFileSystem(artifactPath, null)) {
+                    try (FileSystem artifactFs = FileSystems.newFileSystem(artifactPath, (ClassLoader) null)) {
                         extDep = processQuarkusDir(appDep.getArtifact(), artifactFs.getPath(BootstrapConstants.META_INF),
                                 appBuilder);
                     } catch (IOException e) {

@@ -66,7 +66,7 @@ public class QuarkusJsonPlatformDescriptorLoaderBootstrap
                 if (Files.isDirectory(resourceRoot)) {
                     return readManagedDeps(resourceRoot.resolve("quarkus-bom/pom.xml"));
                 }
-                try (FileSystem fs = FileSystems.newFileSystem(resourceRoot, null)) {
+                try (FileSystem fs = FileSystems.newFileSystem(resourceRoot, (ClassLoader) null)) {
                     return readManagedDeps(fs.getPath("/quarkus-bom/pom.xml"));
                 } catch (Exception e) {
                     throw new IllegalStateException("Failed to open " + resourceRoot, e);
@@ -81,7 +81,7 @@ public class QuarkusJsonPlatformDescriptorLoaderBootstrap
                         if (Files.isDirectory(resourceRoot)) {
                             return doParse(resourceRoot.resolve("quarkus-bom-descriptor/extensions.json"), parser);
                         }
-                        try (FileSystem fs = FileSystems.newFileSystem(resourceRoot, null)) {
+                        try (FileSystem fs = FileSystems.newFileSystem(resourceRoot, (ClassLoader) null)) {
                             return doParse(fs.getPath("/quarkus-bom-descriptor/extensions.json"), parser);
                         } catch (IOException e) {
                             throw new IllegalStateException("Failed to open " + resourceRoot, e);

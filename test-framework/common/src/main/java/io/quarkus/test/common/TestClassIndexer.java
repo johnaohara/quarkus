@@ -33,7 +33,7 @@ public final class TestClassIndexer {
             if (Files.isDirectory(testClassesLocation)) {
                 indexTestClassesDir(indexer, testClassesLocation);
             } else {
-                try (FileSystem jarFs = FileSystems.newFileSystem(testClassesLocation, null)) {
+                try (FileSystem jarFs = FileSystems.newFileSystem(testClassesLocation, (ClassLoader) null)) {
                     for (Path p : jarFs.getRootDirectories()) {
                         indexTestClassesDir(indexer, p);
                     }
