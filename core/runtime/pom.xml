@@ -165,6 +165,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
+                            <release>15</release>
                             <annotationProcessorPaths>
                                 <path>
                                     <groupId>io.quarkus</groupId>

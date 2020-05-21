@@ -11,12 +11,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.jboss.threads.EnhancedQueueExecutor;
 
 import sun.misc.Unsafe;
 
@@ -38,7 +35,7 @@ public final class CleanableExecutor implements ExecutorService {
         }
     }
 
-    private final EnhancedQueueExecutor executor;
+    private final ExecutorService executor;
 
     private static final AtomicInteger generation = new AtomicInteger(1);
     private static final ThreadLocal<Integer> lastGeneration = new ThreadLocal<Integer>() {
@@ -48,7 +45,7 @@ public final class CleanableExecutor implements ExecutorService {
         }
     };
 
-    public CleanableExecutor(EnhancedQueueExecutor executor) {
+    public CleanableExecutor(ExecutorService executor) {
         this.executor = executor;
     }
 
@@ -70,19 +67,19 @@ public final class CleanableExecutor implements ExecutorService {
         //this is a hack, basically just submit a heap of tasks to the pool in order to try and clean up all
         //threadlocal state. It does not really matter if this does not work, however if these threads are holding
         //state that is stopping things being GC'ed it can help with memory usage
-        try {
-            if (!executor.isShutdown()) {
-                for (int i = 0; i < executor.getMaximumPoolSize(); ++i) {
-                    try {
-                        submit(empty);
-                    } catch (RejectedExecutionException e) {
-                        //ignore
-                    }
-                }
-            }
-        } finally {
-            latch.countDown();
-        }
+        //        try {
+        //            if (!executor.isShutdown()) {
+        //                for (int i = 0; i < executor.getMaximumPoolSize(); ++i) {
+        //                    try {
+        //                        submit(empty);
+        //                    } catch (RejectedExecutionException e) {
+        //                        //ignore
+        //                    }
+        //                }
+        //            }
+        //        } finally {
+        latch.countDown();
+        //        }
 
     }
 
