@@ -1,6 +1,5 @@
 package io.quarkus.arc.test.configroot;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.inject.Inject;
@@ -28,7 +27,6 @@ public class ConfigRootInjectionTest {
     public void testInjectionWorks() {
         assertNotNull(client.applicationConfig);
         assertNotNull(client.applicationConfig.name);
-        assertEquals(1, client.threadPoolConfig.coreThreads);
     }
 
     @Singleton
@@ -36,9 +34,6 @@ public class ConfigRootInjectionTest {
 
         @Inject
         ApplicationConfig applicationConfig;
-
-        @Inject
-        ThreadPoolConfig threadPoolConfig;
 
     }
 

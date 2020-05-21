@@ -1,11 +1,12 @@
 package io.quarkus.runtime;
 
-import io.quarkus.runtime.annotations.Recorder;
-import org.jboss.logging.Logger;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.jboss.logging.Logger;
+
+import io.quarkus.runtime.annotations.Recorder;
 
 /**
  *
@@ -27,7 +28,7 @@ public class ExecutorRecorder {
     private static volatile Executor current;
 
     public ExecutorService setupRunTime(ShutdownContext shutdownContext,
-                                        LaunchMode launchMode) {
+            LaunchMode launchMode) {
         if (devModeExecutor != null) {
             current = devModeExecutor;
             return devModeExecutor;
@@ -72,11 +73,11 @@ public class ExecutorRecorder {
             @Override
             public void run() {
                 executor.shutdown();
+            }
         }
-    }
 
-    ;
-}
+        ;
+    }
 
     private static ExecutorService createExecutor() {
 
