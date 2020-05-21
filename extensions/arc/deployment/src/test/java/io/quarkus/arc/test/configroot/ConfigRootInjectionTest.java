@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
 import io.quarkus.runtime.ApplicationConfig;
-import io.quarkus.runtime.ThreadPoolConfig;
 import io.quarkus.test.QuarkusUnitTest;
 
 public class ConfigRootInjectionTest {
