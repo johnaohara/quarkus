@@ -374,6 +374,10 @@ public class RuntimeUpdatesProcessor implements HotReplacementContext, Closeable
             if (!Files.exists(root) || !Files.isReadable(root)) {
                 continue;
             }
+            if (outputPath == null) {
+                log.warnf("Output Path not found for module: `%s`", module.getName());
+                continue;
+            }
             Path outputDir = Paths.get(outputPath);
             //copy all modified non hot deployment files over
             if (doCopy) {
