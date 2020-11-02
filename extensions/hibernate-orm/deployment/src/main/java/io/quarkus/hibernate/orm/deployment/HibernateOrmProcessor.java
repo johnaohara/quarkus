@@ -108,6 +108,7 @@ import io.quarkus.deployment.util.ServiceUtil;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import io.quarkus.hibernate.orm.deployment.integration.HibernateOrmIntegrationBuildItem;
 import io.quarkus.hibernate.orm.deployment.integration.HibernateOrmIntegrationRuntimeConfiguredBuildItem;
+import io.quarkus.hibernate.orm.runtime.EntityManagerFactories;
 import io.quarkus.hibernate.orm.runtime.HibernateOrmRecorder;
 import io.quarkus.hibernate.orm.runtime.HibernateOrmRuntimeConfig;
 import io.quarkus.hibernate.orm.runtime.JPAConfig;
@@ -451,6 +452,7 @@ public final class HibernateOrmProcessor {
 
         List<Class<?>> unremovableClasses = new ArrayList<>();
         unremovableClasses.add(JPAConfig.class);
+        unremovableClasses.add(EntityManagerFactories.class);
         if (capabilities.isPresent(Capability.TRANSACTIONS)) {
             unremovableClasses.add(TransactionManager.class);
             unremovableClasses.add(TransactionEntityManagers.class);

@@ -16,4 +16,10 @@ public class JPAEnversTest {
                 .body(containsString("Quarkus"));
     }
 
+    @Test
+    public void testProjectAtRevisionWithEmfJpa() {
+        RestAssured.when().get("/jpa-envers-test/project/emf/1").then()
+                .body(containsString("Quarkus"));
+    }
+
 }
