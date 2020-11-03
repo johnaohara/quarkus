@@ -9,14 +9,23 @@ public class InstanceHandler implements ServerRestHandler {
      * CDI Manages the lifecycle
      *
      */
-    private final Object instance;
+    private volatile Object instance;
+    private final BeanFactory<Object> factory;
 
     public InstanceHandler(BeanFactory<Object> factory) {
+        this.factory = factory;
         this.instance = factory.createInstance().getInstance();
     }
 
     @Override
     public void handle(QuarkusRestRequestContext requestContext) throws Exception {
+        if (instance == null) {
+            synchronized (this) {
+                if (instance == null) {
+                    instance = factory.createInstance().getInstance();
+                }
+            }
+        }
         requestContext.setEndpointInstance(instance);
     }
 }
