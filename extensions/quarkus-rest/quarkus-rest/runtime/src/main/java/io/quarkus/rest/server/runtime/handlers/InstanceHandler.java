@@ -14,7 +14,6 @@ public class InstanceHandler implements ServerRestHandler {
 
     public InstanceHandler(BeanFactory<Object> factory) {
         this.factory = factory;
-        this.instance = factory.createInstance().getInstance();
     }
 
     @Override
