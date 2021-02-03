@@ -212,6 +212,9 @@ public class QuarkusTestExtension
             sysPropRestore.put(ProfileManager.QUARKUS_TEST_PROFILE_PROP,
                     System.getProperty(ProfileManager.QUARKUS_TEST_PROFILE_PROP));
 
+            sysPropRestore.put("quarkus.thread-pool.enable-virtual-threads", null);
+            System.setProperty("quarkus.thread-pool.enable-virtual-threads", "true");
+
             // clear the test.url system property as the value leaks into the run when using different profiles
             System.clearProperty("test.url");
 
