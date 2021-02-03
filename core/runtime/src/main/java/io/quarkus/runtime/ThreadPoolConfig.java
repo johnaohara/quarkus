@@ -84,4 +84,12 @@ public class ThreadPoolConfig {
     @ConfigItem(defaultValue = "30")
     public Duration keepAliveTime;
 
+    /**
+     * Enable Virtual Threads.
+     * If virtual threads are available, delegate blocking requests to virtual threads instead of a thread pool.
+     * If virtual threads are enabled, all thread pool configuration settings are ignored
+     */
+    @ConfigItem(defaultValue = "false")
+    public boolean enableVirtualThreads;
+
 }

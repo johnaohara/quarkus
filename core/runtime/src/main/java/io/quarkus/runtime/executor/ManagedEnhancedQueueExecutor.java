@@ -1,4 +1,4 @@
-package io.quarkus.runtime;
+package io.quarkus.runtime.executor;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
@@ -6,14 +6,7 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jboss.threads.EnhancedQueueExecutor;
@@ -29,11 +22,12 @@ import sun.misc.Unsafe;
  *
  * TODO: should this just provide a facade that simply starts a new thread pool instead?
  */
-public final class CleanableExecutor implements ExecutorService {
+public final class ManagedEnhancedQueueExecutor implements ManagedExecutorService<EnhancedQueueExecutor> {
 
     static {
         try {
-            Class.forName("org.jboss.threads.EnhancedQueueExecutor$1", false, CleanableExecutor.class.getClassLoader());
+            Class.forName("org.jboss.threads.EnhancedQueueExecutor$1", false,
+                    ManagedEnhancedQueueExecutor.class.getClassLoader());
         } catch (ClassNotFoundException ignored) {
         }
     }
@@ -48,10 +42,11 @@ public final class CleanableExecutor implements ExecutorService {
         }
     };
 
-    public CleanableExecutor(EnhancedQueueExecutor executor) {
+    public ManagedEnhancedQueueExecutor(EnhancedQueueExecutor executor) {
         this.executor = executor;
     }
 
+    @Override
     public void clean() {
         //also clear the current thread, as this is called by the hot deployment thread so it is about to hit a new deployment
         Resetter.run();
@@ -173,6 +168,16 @@ public final class CleanableExecutor implements ExecutorService {
     @Override
     public void execute(Runnable command) {
         executor.submit(new CleaningRunnable(command));
+    }
+
+    @Override
+    public void prefillThreads() {
+        executor.prestartAllCoreThreads();
+    }
+
+    @Override
+    public EnhancedQueueExecutor getExecutorService() {
+        return executor;
     }
 
     /**
